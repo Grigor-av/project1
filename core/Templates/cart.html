@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shop — Clean White Template</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #111827;   /* slate-900 */
+      --muted: #6b7280;  /* slate-500 */
+      --border: #e5e7eb; /* gray-200 */
+      --soft: #f9fafb;   /* gray-50 */
+      --primary: #111827; /* keep it minimalist on white */
+      --ring: rgba(17,24,39,.15);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: saturate(180%) blur(8px);
+      background: rgba(255,255,255,0.8);
+      border-bottom: 1px solid var(--border);
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px; }
+    .brand .logo { width: 28px; height: 28px; border-radius: 8px; background: var(--soft); border:1px solid var(--border); display:inline-block; }
+
+    /* Simple controls */
+    button, .btn {
+      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
+      padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 600;
+      transition: box-shadow .15s ease, transform .05s ease, background .15s ease;
+    }
+    button:hover, .btn:hover { box-shadow: 0 2px 0 0 var(--ring), 0 8px 24px -16px var(--ring); }
+    button:active, .btn:active { transform: translateY(1px); }
+
+    .icon-btn { display:inline-flex; align-items:center; gap:10px; }
+    .badge {
+      min-width: 20px; height: 20px; font-size: 12px; border-radius: 999px; display:inline-flex; align-items:center; justify-content:center;
+      background: var(--text); color: #fff; padding: 0 6px; border:none;
+    }
+
+    /* Layout */
+    main .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    @media (max-width: 1024px) {
+      main .grid { grid-template-columns: repeat(8, 1fr); }
+    }
+    @media (max-width: 640px) {
+      main .grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .card {
+      grid-column: span 3;
+      background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column; min-height: 100%;
+      transition: transform .12s ease, box-shadow .15s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 20px 50px -30px rgba(17,24,39,.2); }
+
+    .thumb { aspect-ratio: 1.2 / 1; background: var(--soft); border-bottom: 1px solid var(--border); position: relative; }
+    .thumb::after { content:""; position:absolute; inset:16px; border-radius:12px; border:1px dashed var(--border); }
+
+    .card-body { padding: 14px; display:flex; flex-direction: column; gap: 10px; flex: 1; }
+    .title { font-weight: 700; font-size: 16px; }
+    .price { color: var(--muted); font-weight: 600; }
+    .grow { flex: 1; }
+
+    .qty-group { display:inline-flex; align-items:center; border:1px solid var(--border); border-radius: 10px; overflow:hidden; }
+    .qty-group button { border:none; padding:8px 12px; }
+    .qty-group input { width: 44px; text-align: center; border: none; outline: none; padding:8px 0; }
+
+    /* Cart Drawer */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(17,24,39,.25); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 45;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+
+    .drawer {
+      position: fixed; top: 0; right: 0; height: 100%; width: min(440px, 100%);
+      background: #fff; border-left: 1px solid var(--border); box-shadow: -8px 0 32px -24px rgba(17,24,39,.35);
+      transform: translateX(100%); transition: transform .25s ease; z-index: 50;
+      display:flex; flex-direction:column;
+    }
+    .drawer.open { transform: translateX(0); }
+
+    .drawer header { position: sticky; top: 0; background:#fff; border-bottom:1px solid var(--border); z-index: 1; }
+    .drawer .content { padding: 12px 16px; display:flex; flex-direction:column; gap: 12px; overflow:auto; flex:1; }
+    .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+
+    .cart-item { display:grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; border:1px solid var(--border); border-radius:14px; padding: 10px; }
+    .cart-thumb { width:64px; height:64px; background: var(--soft); border:1px solid var(--border); border-radius:10px; }
+    .cart-title { font-weight: 600; }
+    .cart-price { color: var(--muted); font-size: 14px; }
+    .cart-actions { display:flex; align-items:center; gap: 8px; }
+
+    .totals { border-top: 1px solid var(--border); padding: 14px 16px; display:flex; align-items:center; justify-content:space-between; gap: 8px; }
+    .checkout { background: var(--text); color:#fff; border-color: var(--text); }
+
+    /* Footer */
+    footer { border-top:1px solid var(--border); background:#fff; }
+    footer .container { padding-block: 24px; color: var(--muted); font-size: 14px; }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="row">
+        <div class="brand" aria-label="Brand">
+          <span class="logo" aria-hidden="true"></span>
+          <span> Zay </span>
+        </div>
+        <div class="row" style="gap:8px;">
+          <button id="openCart" class="icon-btn" aria-label="Open cart">
+            <span>Cart</span>
+            <span id="cartCount" class="badge" aria-live="polite">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-block: 20px;">
+    <div class="grid" id="productGrid">
+      <!-- Example product cards. Duplicate/replace with your data. -->
+      <article class="card" data-id="sku-1001" data-name="Minimalist Watch" data-price="129.99">
+        <div class="thumb" role="img" aria-label="Minimalist Watch image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Minimalist Watch</div>
+          <div class="price">$129.99</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Minimalist Watch to cart">Add to cart</button>
+        </div>
+      </article>
+
+      <article class="card" data-id="sku-1002" data-name="Classic Backpack" data-price="79.00">
+        <div class="thumb" role="img" aria-label="Classic Backpack image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Classic Backpack</div>
+          <div class="price">$79.00</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Classic Backpack to cart">Add to cart</button>
+        </div>
+      </article>
+
+      <article class="card" data-id="sku-1003" data-name="Wireless Earbuds" data-price="59.50">
+        <div class="thumb" role="img" aria-label="Wireless Earbuds image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Wireless Earbuds</div>
+          <div class="price">$59.50</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Wireless Earbuds to cart">Add to cart</button>
+        </div>
+      </article>
+
+      <article class="card" data-id="sku-1004" data-name="Cotton T‑Shirt" data-price="24.00">
+        <div class="thumb" role="img" aria-label="Cotton T‑Shirt image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Cotton T‑Shirt</div>
+          <div class="price">$24.00</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Cotton T‑Shirt to cart">Add to cart</button>
+        </div>
+      </article>
+
+      <article class="card" data-id="sku-1005" data-name="Ceramic Mug" data-price="14.90">
+        <div class="thumb" role="img" aria-label="Ceramic Mug image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Ceramic Mug</div>
+          <div class="price">$14.90</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Ceramic Mug to cart">Add to cart</button>
+        </div>
+      </article>
+
+      <article class="card" data-id="sku-1006" data-name="Desk Lamp" data-price="39.00">
+        <div class="thumb" role="img" aria-label="Desk Lamp image placeholder"></div>
+        <div class="card-body">
+          <div class="title">Desk Lamp</div>
+          <div class="price">$39.00</div>
+          <div class="grow"></div>
+          <button class="add" aria-label="Add Desk Lamp to cart">Add to cart</button>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Cart Drawer & Overlay -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Shopping Cart" aria-hidden="true">
+    <header class="container">
+      <div class="row">
+        <strong>Cart</strong>
+        <div class="row" style="gap:8px;">
+          <button id="clearCart" aria-label="Clear cart">Clear</button>
+          <button id="closeCart" aria-label="Close cart">Close</button>
+        </div>
+      </div>
+    </header>
+    <div class="content" id="cartItems">
+      <div class="empty">Your cart is empty.</div>
+    </div>
+    <div class="totals">
+      <div>
+        <div style="font-weight:700;">Total</div>
+        <div id="cartTotal" class="price">$0.00</div>
+      </div>
+      <button class="checkout" aria-label="Checkout">Checkout</button>
+    </div>
+  </aside>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> My White Shop — Built for a clean, white UI.
+    </div>
+  </footer>
+
+  <script>
+    // --- Utility ---
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const money = (n) => `$${Number(n).toFixed(2)}`;
+
+    // --- State ---
+    const CART_KEY = 'white-shop-cart-v1';
+    let cart = new Map(); // id -> { id, name, price, qty }
+
+    function loadCart() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        if (!raw) return;
+        const arr = JSON.parse(raw);
+        cart = new Map(arr.map(item => [item.id, item]));
+      } catch {}
+    }
+
+    function saveCart() {
+      const arr = Array.from(cart.values());
+      localStorage.setItem(CART_KEY, JSON.stringify(arr));
+    }
+
+    function cartCount() {
+      let n = 0; for (const it of cart.values()) n += it.qty; return n;
+    }
+
+    function cartTotal() {
+      let t = 0; for (const it of cart.values()) t += it.qty * Number(it.price); return t;
+    }
+
+    // --- Cart operations ---
+    function addToCart(id, name, price, qty = 1) {
+      const item = cart.get(id) || { id, name, price: Number(price), qty: 0 };
+      item.qty += qty; cart.set(id, item); saveCart(); renderCart();
+    }
+
+    function setQty(id, qty) {
+      qty = Math.max(0, Number(qty) || 0);
+      if (!cart.has(id)) return;
+      if (qty === 0) { cart.delete(id); } else { cart.get(id).qty = qty; }
+      saveCart(); renderCart();
+    }
+
+    function removeOne(id) { if (!cart.has(id)) return; const it = cart.get(id); setQty(id, it.qty - 1); }
+    function addOne(id)    { if (!cart.has(id)) return; const it = cart.get(id); setQty(id, it.qty + 1); }
+    function removeItem(id){ cart.delete(id); saveCart(); renderCart(); }
+    function clearCart()   { cart.clear(); saveCart(); renderCart(); }
+
+    // --- UI: Drawer ---
+    const drawer = $('#cartDrawer');
+    const overlay = $('#overlay');
+    const openCartBtn = $('#openCart');
+    const closeCartBtn = $('#closeCart');
+    const clearCartBtn = $('#clearCart');
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      drawer.setAttribute('aria-hidden','false');
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      drawer.setAttribute('aria-hidden','true');
+    }
+
+    openCartBtn.addEventListener('click', openDrawer);
+    closeCartBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    // --- UI: Products ---
+    function wireProducts() {
+      $$('.card').forEach(card => {
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        const price = Number(card.dataset.price);
+        card.querySelector('.add').addEventListener('click', () => addToCart(id, name, price, 1));
+      });
+    }
+
+    // --- UI: Cart rendering ---
+    const cartCountEl = $('#cartCount');
+    const cartItemsEl = $('#cartItems');
+    const cartTotalEl = $('#cartTotal');
+
+    function renderCart() {
+      // Count & total
+      cartCountEl.textContent = cartCount();
+      cartTotalEl.textContent = money(cartTotal());
+
+      if (cart.size === 0) {
+        cartItemsEl.innerHTML = '<div class="empty">Your cart is empty.</div>';
+        return;
+      }
+
+      const frag = document.createDocumentFragment();
+      cartItemsEl.innerHTML = '';
+
+      for (const item of cart.values()) {
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div class="cart-thumb" aria-hidden="true"></div>
+          <div>
+            <div class="cart-title">${item.name}</div>
+            <div class="cart-price">${money(item.price)} each</div>
+          </div>
+          <div class="cart-actions">
+            <button aria-label="Decrease quantity" data-act="dec" data-id="${item.id}">−</button>
+            <input type="number" inputmode="numeric" min="0" step="1" value="${item.qty}" aria-label="Quantity for ${item.name}" data-id="${item.id}"/>
+            <button aria-label="Increase quantity" data-act="inc" data-id="${item.id}">+</button>
+            <button aria-label="Remove item" data-act="rm" data-id="${item.id}">Remove</button>
+          </div>
+        `;
+        frag.appendChild(row);
+      }
+      cartItemsEl.appendChild(frag);
+
+      // Attach listeners for new elements
+      $$('#cartItems [data-act="dec"]').forEach(b => b.addEventListener('click', e => removeOne(e.currentTarget.dataset.id)));
+      $$('#cartItems [data-act="inc"]').forEach(b => b.addEventListener('click', e => addOne(e.currentTarget.dataset.id)));
+      $$('#cartItems [data-act="rm"]').forEach(b => b.addEventListener('click', e => removeItem(e.currentTarget.dataset.id)));
+      $$('#cartItems input[type="number"]').forEach(inp => inp.addEventListener('change', e => setQty(e.currentTarget.dataset.id, e.currentTarget.value)));
+    }
+
+    // Clear cart
+    clearCartBtn.addEventListener('click', clearCart);
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      $('#year').textContent = new Date().getFullYear();
+      loadCart();
+      wireProducts();
+      renderCart();
+    });
+  </script>
+</body>
+</html>
